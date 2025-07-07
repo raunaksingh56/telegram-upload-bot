@@ -4,6 +4,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from urllib.parse import urlparse
 from time import time
+from datetime import datetime, timezone
 
 # Replace with your Telegram Bot Token
 TOKEN = "7814892825:AAEQ2IsHhokoFyoWuO1ZC4GtsgkYIPm1zqs"
@@ -15,13 +16,19 @@ DOWNLOAD_DIR = "downloads"
 if not os.path.exists(DOWNLOAD_DIR):
     os.makedirs(DOWNLOAD_DIR)
 
+# Function to get IST time
+def get_ist_time():
+    return datetime.now(timezone.utc).astimezone(timezone(offset=timezone(timedelta(hours=5, minutes=30))))
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle the /start command."""
+    ist_time = get_ist_time().strftime("%I:%M %p IST on %B %d, %Y")
     welcome_message = (
-        "👋 *Welcome to the File Upload Bot!* \n"
-        "Created by my master, *Raunak Singh*.\n\n"
-        "📤 Send me a direct file URL to download and upload it to Telegram.\n"
-        "ℹ️ Use /help for more information."
+        f"👋 *Welcome to the File Upload Bot!* \n"
+        f"Created by my master, *Raunak Singh*.\n\n"
+        f"📅 Current time: {ist_time}\n"
+        f"📤 Send me a direct file URL to download and upload it to Telegram.\n"
+        f"ℹ️ Use /help for more information."
     )
     await update.message.reply_text(welcome_message, parse_mode="Markdown")
 
@@ -98,9 +105,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             return
 
         # Upload file to Telegram
-        await status_message.edit_text
-
-(
+        await status_message.edit_text(
             f"✅ *Download Complete!*\n"
             f"📤 Uploading {filename} to Telegram...",
             parse_mode="Markdown"
@@ -114,9 +119,11 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
                 parse_mode="Markdown"
             )
 
+        ist_time = get_ist_time().strftime("%I:%M %p IST on %B %d, %Y")
         await status_message.edit_text(
             f"✅ *Success!*\n"
-            f"📦 File `{filename}` uploaded successfully!",
+            f"📦 File `{filename}` uploaded successfully!\n"
+            f"📅 Time: {ist_time}",
             parse_mode="Markdown"
         )
 
