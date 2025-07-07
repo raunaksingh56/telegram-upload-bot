@@ -8,7 +8,7 @@ from datetime import datetime
 import pytz  # Added for timezone support
 
 # Replace with your Telegram Bot Token
-TOKEN = "YOUR_BOT_TOKEN_HERE"
+TOKEN = "7814892825:AAEQ2IsHhokoFyoWuO1ZC4GtsgkYIPm1zqs"
 
 # Directory to store downloaded files
 DOWNLOAD_DIR = "downloads"
