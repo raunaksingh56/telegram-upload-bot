@@ -4,10 +4,11 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from urllib.parse import urlparse
 from time import time
-from datetime import datetime, timezone
+from datetime import datetime
+import pytz  # Added for timezone support
 
 # Replace with your Telegram Bot Token
-TOKEN = "7814892825:AAEQ2IsHhokoFyoWuO1ZC4GtsgkYIPm1zqs"
+TOKEN = "YOUR_BOT_TOKEN_HERE"
 
 # Directory to store downloaded files
 DOWNLOAD_DIR = "downloads"
@@ -16,13 +17,14 @@ DOWNLOAD_DIR = "downloads"
 if not os.path.exists(DOWNLOAD_DIR):
     os.makedirs(DOWNLOAD_DIR)
 
-# Function to get IST time
+# Function to get IST time using pytz
 def get_ist_time():
-    return datetime.now(timezone.utc).astimezone(timezone(offset=timezone(timedelta(hours=5, minutes=30))))
+    ist = pytz.timezone('Asia/Kolkata')
+    return datetime.now(ist).strftime("%I:%M %p IST on %B %d, %Y")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle the /start command."""
-    ist_time = get_ist_time().strftime("%I:%M %p IST on %B %d, %Y")
+    ist_time = get_ist_time()
     welcome_message = (
         f"👋 *Welcome to the File Upload Bot!* \n"
         f"Created by my master, *Raunak Singh*.\n\n"
@@ -119,7 +121,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
                 parse_mode="Markdown"
             )
 
-        ist_time = get_ist_time().strftime("%I:%M %p IST on %B %d, %Y")
+        ist_time = get_ist_time()
         await status_message.edit_text(
             f"✅ *Success!*\n"
             f"📦 File `{filename}` uploaded successfully!\n"
